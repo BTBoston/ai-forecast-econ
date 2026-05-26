@@ -1,1 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The AI Productivity Divide | ECON1626 Assessment 3</title>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg: #f6f2ea;
+      --card: #fffaf2;
+      --text: #18201d;
+      --muted: #5c6761;
+      --green: #145b4b;
+      --orange: #b65f2a;
+      --blue: #233f7a;
+      --border: #ded5c6;
+      --shadow: 0 18px 45px rgba(24, 32, 29, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 250, 242, 0.95);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: var(--green);
+    }
+
+    header {
+      background: linear-gradient(135deg, #fffaf2, #efe4d4);
+      border-bottom: 1px solid var(--border);
+      padding: 70px 24px;
+    }
+
+    .hero {
+      max-width: 1180px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--orange);
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    h1 {
+      font-size: clamp(44px, 8vw, 92px);
+      line-height: 0.95;
+      letter-spacing: -4px;
+      margin: 16px 0;
+    }
+
+    h2 {
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin: 10px 0 20px;
+    }
+
+    h3 {
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    .subtitle {
+      font-size: 22px;
+      color: var(--muted);
+      max-width: 780px;
+    }
+
+    .memo, .stat-card, .card, .scenario, .callout, .simulator-box, .references {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .memo {
+      margin-top: 28px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px 20px;
+    }
+
+    .memo p {
+      margin: 0;
+    }
+
+    .stats {
+      display: grid;
+      gap: 16px;
+    }
+
+    .stat-card {
+      padding: 22px;
+      background: white;
+    }
+
+    .stat-number {
+      display: block;
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--green);
+      letter-spacing: -2px;
+    }
+
+    .stat-card p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-weight: bold;
+    }
+
+    section {
+      max-width: 1180px;
+      margin: auto;
+      padding: 72px 24px;
+    }
+
+    .section-label {
+      color: var(--orange);
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      font-weight: bold;
+    }
+
+    .lead {
+      font-size: 21px;
+      color: var(--muted);
+      max-width: 980px;
+    }
+
+    .callout {
+      padding: 22px;
+      background: #e0eee8;
+      margin: 28px 0;
+      color: #173b31;
+    }
+
+    .grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .two {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .three {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .four {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .card {
+      padding: 24px;
+      background: white;
+    }
+
+    .card p {
+      color: var(--muted);
+    }
+
+    .alt {
+      background: #efe7d8;
+      max-width: none;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .alt-inner {
+      max-width: 1180px;
+      margin: auto;
+      padding: 72px 24px;
+    }
+
+    .flow {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+    }
+
+    .flow-step {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 20px;
+      position: relative;
+    }
+
+    .flow-step span {
+      display: inline-flex;
+      width: 34px;
+      height: 34px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--green);
+      color: white;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .scenario {
+      padding: 24px;
+      background: white;
+      border-top: 8px solid var(--green);
+    }
+
+    .scenario.upside {
+      border-top-color: var(--blue);
+    }
+
+    .scenario.downside {
+      border-top-color: var(--orange);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #e0eee8;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .upside .tag {
+      background: #dfe8f7;
+      color: var(--blue);
+    }
+
+    .downside .tag {
+      background: #f4dfce;
+      color: var(--orange);
+    }
+
+    .scenario li {
+      margin-bottom: 8px;
+      color: var(--muted);
+    }
+
+    .simulator {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 22px;
+      margin-top: 30px;
+    }
+
+    .simulator-box {
+      padding: 24px;
+      background: white;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 22px;
+    }
+
+    label span {
+      float: right;
+      color: var(--orange);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--green);
+      margin-top: 10px;
+    }
+
+    .results {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .result {
+      background: #fffaf2;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .result small {
+      display: block;
+      color: var(--orange);
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+    }
+
+    .result strong {
+      display: block;
+      font-size: 25px;
+      margin-top: 6px;
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+      background: #e0eee8;
+    }
+
+    canvas {
+      width: 100% !important;
+      max-height: 350px;
+    }
+
+    .policy-table {
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background: white;
+      margin-top: 30px;
+    }
+
+    .policy-row {
+      display: grid;
+      grid-template-columns: 0.8fr 1.1fr 1.1fr;
+      gap: 18px;
+      padding: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .policy-row:last-child {
+      border-bottom: none;
+    }
+
+    .policy-header {
+      background: var(--green);
+      color: white;
+      font-weight: bold;
+    }
+
+    .references {
+      padding: 28px;
+      background: white;
+    }
+
+    .references li {
+      margin-bottom: 12px;
+    }
+
+    footer {
+      background: var(--text);
+      color: white;
+      text-align: center;
+      padding: 28px 20px;
+    }
+
+    @media (max-width: 900px) {
+      .hero, .two, .three, .four, .flow, .simulator, .results {
+        grid-template-columns: 1fr;
+      }
+
+      .memo {
+        grid-template-columns: 1fr;
+      }
+
+      .policy-row {
+        grid-template-columns: 1fr;
+      }
+
+      .policy-header {
+        display: none;
+      }
+
+      h1 {
+        letter-spacing: -2px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <a href="#thesis">Thesis</a>
+    <a href="#evidence">Evidence</a>
+    <a href="#mechanism">Mechanism</a>
+    <a href="#scenarios">Scenarios</a>
+    <a href="#simulator">Simulator</a>
+    <a href="#policy">Policy</a>
+    <a href="#uncertainty">Uncertainty</a>
+    <a href="#references">References</a>
+  </nav>
+
+  <header>
+    <div class="hero">
+      <div>
+        <p class="eyebrow">ECON1626 Assessment 3 - Interactive Web Essay</p>
+        <h1>The AI Productivity Divide</h1>
+        <p class="subtitle">
+          How artificial intelligence could reshape work, wages and market power by 2030.
+        </p>
+
+        <div class="memo">
+          <p><strong>Student:</strong> Boston Boynton</p>
+          <p><strong>Repository:</strong> econ1626-ai-future-forecast</p>
+          <p><strong>Time horizon:</strong> 2027-2030</p>
+          <p><strong>Core question:</strong> Who captures AI productivity gains?</p>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card">
+          <span class="stat-number">60%</span>
+          <p>of jobs in advanced economies may be exposed to AI, according to the IMF.</p>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-number">2030</span>
+          <p>is the forecast horizon used to examine productivity, employment and policy outcomes.</p>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-number">3</span>
+          <p>scenarios are modelled: baseline, upside and downside.</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <section id="thesis">
+      <p class="section-label">01 - Thesis</p>
+      <h2>AI is a task shock before it is a jobs shock.</h2>
+
+      <p class="lead">
+        By 2027-2030, artificial intelligence is unlikely to create a simple economy-wide labour collapse.
+        The more likely near-term outcome is a productivity divide. Firms, workers and countries that can
+        integrate AI into workflows will gain a compounding advantage, while routine cognitive workers,
+        junior knowledge roles and smaller firms face task erosion, weaker bargaining power and exclusion
+        from productivity gains unless policy improves diffusion, training and competition.
+      </p>
+
+      <div class="callout">
+        <strong>Forecast in one sentence:</strong>
+        AI will increase output potential, but the distribution of gains will depend on adoption capacity,
+        complementary investment, labour-market adjustment, market structure and governance.
+      </div>
+
+      <div class="grid two">
+        <div class="card">
+          <h3>Why 2027-2030?</h3>
+          <p>
+            This horizon is close enough for current generative AI adoption, workplace redesign and data-centre
+            investment to matter, but long enough for firms, workers and governments to respond.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>How AI 2027 is used</h3>
+          <p>
+            AI 2027 is used as a scenario inspiration source, not as a certain prediction. It is useful because
+            it demonstrates how AI futures can branch depending on capability progress, governance and adoption speed.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="evidence" class="alt">
+      <div class="alt-inner">
+        <p class="section-label">02 - Evidence base</p>
+        <h2>Current evidence points to exposure, not instant replacement.</h2>
+
+        <div class="grid four">
+          <div class="card">
+            <h3>Labour exposure</h3>
+            <p>
+              The IMF estimates that almost 40% of global employment is exposed to AI, rising to about 60%
+              in advanced economies. Exposure means jobs are affected, not automatically replaced.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Australian labour market</h3>
+            <p>
+              Jobs and Skills Australia argues that generative AI is more likely to augment many jobs than
+              simply replace them, although impacts vary by occupation, industry and region.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Firm adoption</h3>
+            <p>
+              Many firms are experimenting with AI, but the economic impact depends on whether they redesign
+              workflows around the technology rather than simply adding AI tools to existing processes.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Infrastructure limits</h3>
+            <p>
+              AI is not purely digital. It depends on data centres, electricity, chips and cloud infrastructure,
+              which can become constraints on productivity growth.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mechanism">
+      <p class="section-label">03 - Forecasting logic</p>
+      <h2>From AI capability to economic outcomes</h2>
+
+      <p class="lead">
+        AI capability does not automatically become productivity growth. Economic impact occurs only when
+        capability passes through adoption, task redesign, labour adjustment and governance.
+      </p>
+
+      <div class="flow">
+        <div class="flow-step">
+          <span>1</span>
+          <h3>Capability</h3>
+          <p>AI improves at writing, coding, search, analysis, customer service and decision support.</p>
+        </div>
+
+        <div class="flow-step">
+          <span>2</span>
+          <h3>Task cost falls</h3>
+          <p>The time and cost of routine cognitive tasks declines.</p>
+        </div>
+
+        <div class="flow-step">
+          <span>3</span>
+          <h3>Work redesign</h3>
+          <p>Firms automate some tasks and augment others with AI copilots and agents.</p>
+        </div>
+
+        <div class="flow-step">
+          <span>4</span>
+          <h3>Productivity</h3>
+          <p>Output rises where firms have data, skills, trust, compute and management capacity.</p>
+        </div>
+
+        <div class="flow-step">
+          <span>5</span>
+          <h3>Distribution</h3>
+          <p>Gains flow to AI-complementary workers, capital owners and dominant platforms unless policy broadens access.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Simple forecasting identity:</strong>
+        Economic impact = AI capability × adoption × task exposure × complementary investment × governance quality.
+      </div>
+    </section>
+
+    <section id="scenarios" class="alt">
+      <div class="alt-inner">
+        <p class="section-label">04 - Scenarios</p>
+        <h2>Three plausible economic futures</h2>
+
+        <div class="grid three">
+          <div class="scenario">
+            <p class="tag">Baseline</p>
+            <h3>Uneven augmentation</h3>
+            <p>
+              AI becomes common, but adoption is uneven. Large firms and high-skill workers benefit first
+              because they have better data, software budgets and management systems.
+            </p>
+            <ul>
+              <li><strong>Productivity:</strong> moderate gains concentrated in knowledge-intensive firms.</li>
+              <li><strong>Tasks:</strong> routine writing, research and customer support are compressed.</li>
+              <li><strong>Wages:</strong> AI-complementary workers gain more bargaining power.</li>
+              <li><strong>Structure:</strong> large firms strengthen their advantage.</li>
+            </ul>
+          </div>
+
+          <div class="scenario upside">
+            <p class="tag">Upside</p>
+            <h3>Broad productivity diffusion</h3>
+            <p>
+              AI becomes cheap, safe and useful for SMEs, education, healthcare, public services and regional firms.
+              Policy helps workers move into AI-complementary roles.
+            </p>
+            <ul>
+              <li><strong>Productivity:</strong> stronger and more widely shared growth.</li>
+              <li><strong>Tasks:</strong> AI frees workers for judgement, care and relationship work.</li>
+              <li><strong>Wages:</strong> retraining spreads benefits more evenly.</li>
+              <li><strong>Structure:</strong> smaller firms gain access to advanced capabilities.</li>
+            </ul>
+          </div>
+
+          <div class="scenario downside">
+            <p class="tag">Downside</p>
+            <h3>Concentrated automation race</h3>
+            <p>
+              AI capability improves faster than institutions adapt. Firms automate aggressively, labour
+              adjustment is slow, and compute and data concentrate around dominant platforms.
+            </p>
+            <ul>
+              <li><strong>Productivity:</strong> high in frontier firms but weakly diffused.</li>
+              <li><strong>Tasks:</strong> junior and routine cognitive roles shrink quickly.</li>
+              <li><strong>Wages:</strong> exposed workers lose bargaining power.</li>
+              <li><strong>Structure:</strong> market concentration increases.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="simulator">
+      <p class="section-label">05 - Interactive scenario simulator</p>
+      <h2>Change the assumptions</h2>
+
+      <p class="lead">
+        This simulator is not a precise GDP forecast. It is an illustrative model that shows how adoption,
+        automation, productivity, retraining and governance shift the economy toward different scenarios.
+      </p>
+
+      <div class="simulator">
+        <div class="simulator-box">
+          <label>
+            AI adoption rate
+            <span id="adoptionValue">55%</span>
+            <input id="adoption" type="range" min="10" max="95" value="55">
+          </label>
+
+          <label>
+            Share of exposed tasks automated
+            <span id="automationValue">25%</span>
+            <input id="automation" type="range" min="5" max="70" value="25">
+          </label>
+
+          <label>
+            Productivity gain per adopted task
+            <span id="productivityValue">15%</span>
+            <input id="productivity" type="range" min="2" max="40" value="15">
+          </label>
+
+          <label>
+            Worker transition effectiveness
+            <span id="transitionValue">45%</span>
+            <input id="transition" type="range" min="0" max="90" value="45">
+          </label>
+
+          <label>
+            Governance and competition strength
+            <span id="governanceValue">50%</span>
+            <input id="governance" type="range" min="0" max="90" value="50">
+          </label>
+        </div>
+
+        <div class="simulator-box">
+          <div class="results">
+            <div class="result">
+              <small>Indicative productivity effect</small>
+              <strong id="productivityScore">0%</strong>
+            </div>
+
+            <div class="result">
+              <small>Employment disruption index</small>
+              <strong id="disruptionScore">0 / 100</strong>
+            </div>
+
+            <div class="result">
+              <small>Inequality pressure index</small>
+              <strong id="inequalityScore">0 / 100</strong>
+            </div>
+
+            <div class="result wide">
+              <small>Model-implied trajectory</small>
+              <strong id="scenarioName">Baseline</strong>
+            </div>
+          </div>
+
+          <canvas id="impactChart"></canvas>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Method note:</strong>
+        The model assumes 60% task exposure for an advanced economy. Productivity rises with adoption
+        and task-level productivity gain. Disruption rises with automation but falls with stronger worker
+        transition support. Inequality pressure rises with automation and weak governance.
+      </div>
+    </section>
+
+    <section id="policy" class="alt">
+      <div class="alt-inner">
+        <p class="section-label">06 - Policy and governance</p>
+        <h2>Policy changes the probability of each scenario.</h2>
+
+        <p class="lead">
+          AI policy should not simply slow or accelerate adoption. The stronger objective is to broaden
+          productivity diffusion while managing displacement, concentration and infrastructure pressure.
+        </p>
+
+        <div class="policy-table">
+          <div class="policy-row policy-header">
+            <div>Policy choice</div>
+            <div>How it shifts the trajectory</div>
+            <div>Trade-off or unintended consequence</div>
+          </div>
+
+          <div class="policy-row">
+            <div><strong>AI skills and transition fund</strong></div>
+            <div>Helps workers move into AI-complementary roles and reduces displacement risk.</div>
+            <div>Training may fail if firms automate faster than workers transition or if local labour demand is weak.</div>
+          </div>
+
+          <div class="policy-row">
+            <div><strong>SME AI adoption support</strong></div>
+            <div>Spreads productivity gains beyond large firms and reduces diffusion gaps.</div>
+            <div>May subsidise low-value AI use unless tied to measurable capability building.</div>
+          </div>
+
+          <div class="policy-row">
+            <div><strong>Competition policy</strong></div>
+            <div>Limits concentration around compute, model access, data and digital distribution.</div>
+            <div>Hard to enforce globally and may conflict with scale economies in frontier AI development.</div>
+          </div>
+
+          <div class="policy-row">
+            <div><strong>Worker consultation rules</strong></div>
+            <div>Encourages augmentation rather than unmanaged displacement.</div>
+            <div>Could slow adoption or create compliance costs for smaller firms.</div>
+          </div>
+
+          <div class="policy-row">
+            <div><strong>Data-centre energy planning</strong></div>
+            <div>Reduces grid bottlenecks and environmental backlash from AI infrastructure.</div>
+            <div>Strict limits may slow AI investment or push activity offshore.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="uncertainty">
+      <p class="section-label">07 - Uncertainty and limitations</p>
+      <h2>What could break this forecast?</h2>
+
+      <div class="grid two">
+        <div class="card">
+          <h3>Capability uncertainty</h3>
+          <p>
+            AI agents may become reliable enough to automate full workflows, or they may remain useful mainly
+            as copilots that still require human judgement.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Adoption uncertainty</h3>
+          <p>
+            Widespread AI use does not guarantee productivity growth. The key question is whether firms redesign
+            work around AI or simply add tools to existing processes.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Measurement uncertainty</h3>
+          <p>
+            Productivity gains may arrive with a lag because training, complementary investment and organisational
+            change take time.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Distribution uncertainty</h3>
+          <p>
+            AI can raise total output while worsening inequality if gains flow mainly to capital owners,
+            high-skill workers and dominant platforms.
+          </p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Final forecast:</strong>
+        The baseline is not mass unemployment by 2030. It is growth with a distribution problem. AI raises
+        productivity where adoption is effective, but without strong diffusion policy the gains are likely to
+        concentrate among larger firms, AI-complementary workers and capital owners.
+      </div>
+    </section>
+
+    <section id="references">
+      <p class="section-label">References</p>
+      <h2>Sources and method notes</h2>
+
+      <div class="references">
+        <ul>
+          <li>AI Futures Project 2025, <em>AI 2027</em>, viewed 26 May 2026, &lt;https://ai-2027.com/&gt;.</li>
+          <li>International Monetary Fund 2024, <em>AI Will Transform the Global Economy. Let’s Make Sure It Benefits Humanity</em>, viewed 26 May 2026, &lt;https://www.imf.org/en/blogs/articles/2024/01/14/ai-will-transform-the-global-economy-lets-make-sure-it-benefits-humanity&gt;.</li>
+          <li>Jobs and Skills Australia 2025, <em>Our Gen AI Transition: Implications for Work and Skills</em>, viewed 26 May 2026, &lt;https://www.jobsandskills.gov.au/publications/generative-ai-capacity-study-report&gt;.</li>
+          <li>International Energy Agency 2025, <em>Energy and AI</em>, viewed 26 May 2026, &lt;https://www.iea.org/reports/energy-and-ai&gt;.</li>
+          <li>Stanford Institute for Human-Centered Artificial Intelligence 2026, <em>The 2026 AI Index Report</em>, viewed 26 May 2026, &lt;https://hai.stanford.edu/ai-index&gt;.</li>
+          <li>McKinsey & Company 2025, <em>The State of AI: Global Survey</em>, viewed 26 May 2026, &lt;https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai&gt;.</li>
+          <li>OECD 2023, <em>OECD Employment Outlook 2023: Artificial Intelligence and the Labour Market</em>, viewed 26 May 2026, &lt;https://www.oecd.org/employment-outlook/2023/&gt;.</li>
+        </ul>
+
+        <p>
+          <strong>AI-enabled method statement:</strong>
+          AI assistance was used to structure the essay, develop scenarios, draft the HTML/CSS/JavaScript,
+          and build the interactive simulator. The simulator is transparent and illustrative. It is designed
+          to communicate economic mechanisms, not to produce a definitive forecast.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>ECON1626 Assessment 3 | GitHub Pages Interactive Web Essay | econ1626-ai-future-forecast</p>
+  </footer>
+
+  <script>
+    const sliders = {
+      adoption: document.getElementById("adoption"),
+      automation: document.getElementById("automation"),
+      productivity: document.getElementById("productivity"),
+      transition: document.getElementById("transition"),
+      governance: document.getElementById("governance")
+    };
+
+    const values = {
+      adoption: document.getElementById("adoptionValue"),
+      automation: document.getElementById("automationValue"),
+      productivity: document.getElementById("productivityValue"),
+      transition: document.getElementById("transitionValue"),
+      governance: document.getElementById("governanceValue")
+    };
+
+    const productivityScore = document.getElementById("productivityScore");
+    const disruptionScore = document.getElementById("disruptionScore");
+    const inequalityScore = document.getElementById("inequalityScore");
+    const scenarioName = document.getElementById("scenarioName");
+
+    let chart;
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function updateModel() {
+      const adoption = Number(sliders.adoption.value) / 100;
+      const automation = Number(sliders.automation.value) / 100;
+      const productivity = Number(sliders.productivity.value) / 100;
+      const transition = Number(sliders.transition.value) / 100;
+      const governance = Number(sliders.governance.value) / 100;
+
+      Object.keys(sliders).forEach(key => {
+        values[key].textContent = sliders[key].value + "%";
+      });
+
+      const exposure = 0.60;
+      const diffusionBonus = 1 + governance * 0.30;
+
+      const productivityEffect = adoption * exposure * productivity * diffusionBonus * 100;
+      const disruption = clamp(adoption * automation * (1 - transition * 0.72) * 100, 0, 100);
+      const inequality = clamp(
+        ((adoption * 0.30) + (automation * 0.38) + ((1 - governance) * 0.32)) * (1 - transition * 0.25) * 100,
+        0,
+        100
+      );
+
+      productivityScore.textContent = productivityEffect.toFixed(1) + "%";
+      disruptionScore.textContent = Math.round(disruption) + " / 100";
+      inequalityScore.textContent = Math.round(inequality) + " / 100";
+
+      let scenario = "Baseline: uneven augmentation";
+
+      if (productivityEffect > 9 && inequality < 35 && governance > 0.60) {
+        scenario = "Upside: broad productivity diffusion";
+      } else if (disruption > 22 || inequality > 55) {
+        scenario = "Downside: concentrated automation race";
+      }
+
+      scenarioName.textContent = scenario;
+
+      const chartValues = [
+        Number(productivityEffect.toFixed(1)),
+        Math.round(disruption),
+        Math.round(inequality)
+      ];
+
+      if (!chart) {
+        const ctx = document.getElementById("impactChart");
+        chart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: [
+              "Productivity effect",
+              "Employment disruption",
+              "Inequality pressure"
+            ],
+            datasets: [{
+              label: "Model output",
+              data: chartValues,
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true,
+                suggestedMax: 100
+              }
+            },
+            plugins: {
+              legend: {
+                display: false
+              }
+            }
+          }
+        });
+      } else {
+        chart.data.datasets[0].data = chartValues;
+        chart.update();
+      }
+    }
+
+    Object.values(sliders).forEach(slider => {
+      slider.addEventListener("input", updateModel);
+    });
+
+    updateModel();
+  </script>
+
+</body>
+</html>
